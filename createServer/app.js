@@ -22,9 +22,9 @@ app.get('/favicon.ico', (req, res, next) => {
 });
 
 app.use((req, res, next) => {
-    User.findById(1)
+    User.findById('64b5971e15b02ae86eb0ea38')
     .then(user => {
-        req.user = user;
+        req.user = new User(user._id, user.name, user.email, user.cart);
         next();
     })
     .catch(err => {
