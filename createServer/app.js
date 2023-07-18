@@ -1,12 +1,13 @@
+const path = require('path');
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
+const mongoose = require('mongoose');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const rootDir = require('./util/path');
 const errorController = require('./controllers/error');
-const mongoConnect = require('./util/database').mongoConnect;
 const User = require('./models/user');
 
 const app = express();
@@ -22,9 +23,9 @@ app.get('/favicon.ico', (req, res, next) => {
 });
 
 app.use((req, res, next) => {
-    User.findById('64b5971e15b02ae86eb0ea38')
+    User.findById('64b643e1c8cafe4f9f545e68')
     .then(user => {
-        req.user = new User(user._id, user.name, user.email, user.cart);
+        req.user = user;
         next();
     })
     .catch(err => {
@@ -37,6 +38,21 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoConnect(()=>{
+mongoose.connect('mongodb+srv://avnishranwa7:0XLcbnT14MhInnc7@cluster0.7vw33kc.mongodb.net/shop?retryWrites=true&w=majority')
+.then(()=>{
+    User.findOne()
+    .then(user=>{
+        if(!user){
+            const user = new User({
+                name: 'Avnish',
+                email: 'avnish@test.com',
+                cart: {
+                    items: []
+                }
+            });
+            user.save();
+        }
+    })
     app.listen(3000);
 })
+.catch(err=>console.log(err));
