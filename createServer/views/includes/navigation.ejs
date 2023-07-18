@@ -13,6 +13,7 @@
           >Products</a
         >
       </li>
+      <% if(isAuthenticated){ %>
       <li class="main-header__item">
         <a class="<%= pageTitle==='Cart' ? 'active' : '' %>" href="/cart"
           >Cart</a
@@ -37,6 +38,22 @@
           >Admin Products</a
         >
       </li>
+      <% } %>
+    </ul>
+    <ul class="main-header__item-list">
+      <% if(!isAuthenticated){ %>
+      <li class="main-header__item">
+        <a class="<%= pageTitle==='Login' ? 'active' : '' %>" href="/login"
+          >Login</a
+        >
+      </li>
+      <% } else{ %>
+      <li class="main-header__item">
+        <form action="/logout" method="POST">
+          <button type="submit">Log Out</button>
+        </form>
+      </li>
+      <% } %>
     </ul>
   </nav>
 </header>
@@ -51,27 +68,41 @@
         >Products</a
       >
     </li>
-    <li class="mobile-nav__item">
+    <% if (isAuthenticated) { %>
+    <li class="main-header__item">
       <a class="<%= pageTitle==='Cart' ? 'active' : '' %>" href="/cart">Cart</a>
     </li>
-    <li class="mobile-nav__item">
+    <li class="main-header__item">
       <a class="<%= pageTitle==='Orders' ? 'active' : '' %>" href="/orders"
         >Orders</a
       >
     </li>
-    <li class="mobile-nav__item">
+    <li class="main-header__item">
       <a
         class="<%= pageTitle==='Add Product' ? 'active' : '' %>"
         href="/admin/add-product"
         >Add Product</a
       >
     </li>
-    <li class="mobile-nav__item">
+    <li class="main-header__item">
       <a
         class="<%= pageTitle==='Admin Products' ? 'active' : '' %>"
         href="/admin/products"
         >Admin Products</a
       >
     </li>
+    <% } %> <% if (!isAuthenticated) { %>
+    <li class="main-header__item">
+      <a class="<%= pageTitle==='Login' ? 'active' : '' %>" href="/login"
+        >Login</a
+      >
+    </li>
+    <% } else { %>
+    <li class="main-header__item">
+      <form action="/logout" method="POST">
+        <button type="submit">Log Out</button>
+      </form>
+    </li>
+    <% } %>
   </ul>
 </nav>
