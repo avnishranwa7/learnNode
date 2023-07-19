@@ -47,9 +47,15 @@
           >Login</a
         >
       </li>
+      <li class="main-header__item">
+        <a class="<%= pageTitle==='Signup' ? 'active' : '' %>" href="/signup"
+          >Signup</a
+        >
+      </li>
       <% } else{ %>
       <li class="main-header__item">
         <form action="/logout" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <button type="submit">Log Out</button>
         </form>
       </li>
@@ -69,22 +75,22 @@
       >
     </li>
     <% if (isAuthenticated) { %>
-    <li class="main-header__item">
+    <li class="mobile-nav__item">
       <a class="<%= pageTitle==='Cart' ? 'active' : '' %>" href="/cart">Cart</a>
     </li>
-    <li class="main-header__item">
+    <li class="mobile-nav__item">
       <a class="<%= pageTitle==='Orders' ? 'active' : '' %>" href="/orders"
         >Orders</a
       >
     </li>
-    <li class="main-header__item">
+    <li class="mobile-nav__item">
       <a
         class="<%= pageTitle==='Add Product' ? 'active' : '' %>"
         href="/admin/add-product"
         >Add Product</a
       >
     </li>
-    <li class="main-header__item">
+    <li class="mobile-nav__item">
       <a
         class="<%= pageTitle==='Admin Products' ? 'active' : '' %>"
         href="/admin/products"
@@ -92,17 +98,22 @@
       >
     </li>
     <% } %> <% if (!isAuthenticated) { %>
-    <li class="main-header__item">
-      <a class="<%= pageTitle==='Login' ? 'active' : '' %>" href="/login"
-        >Login</a
-      >
-    </li>
+      <li class="mobile-nav__item">
+        <a class="<%= pageTitle==='Login' ? 'active' : '' %>" href="/login"
+          >Login</a
+        >
+      </li>
+      <li class="mobile-nav__item">
+        <a class="<%= pageTitle==='Signup' ? 'active' : '' %>" href="/signup"
+          >Signup</a
+        >
+      </li>
     <% } else { %>
-    <li class="main-header__item">
-      <form action="/logout" method="POST">
-        <button type="submit">Log Out</button>
-      </form>
-    </li>
+      <li class="main-header__item">
+        <form action="/logout" method="POST">
+          <button type="submit">Log Out</button>
+        </form>
+      </li>
     <% } %>
   </ul>
 </nav>

@@ -1,10 +1,7 @@
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
-    if (!req.session.isLoggedIn) {
-        return res.redirect('/login');
-    }
-    res.render('admin/edit-product', { pageTitle: 'Add Product', editing: false, isAuthenticated: req.session.isLoggedIn });
+    res.render('admin/edit-product', { pageTitle: 'Add Product', editing: false });
 };
 
 exports.postAddProduct = (req, res, next) => {
@@ -35,7 +32,7 @@ exports.getEditProduct = (req, res, next) => {
             if (!product) {
                 return res.redirect('/');
             }
-            res.render('admin/edit-product', { product, pageTitle: 'Add Product', pageTitle: 'Edit Product', editing: editMode, isAuthenticated: req.session.isLoggedIn });
+            res.render('admin/edit-product', { product, pageTitle: 'Add Product', pageTitle: 'Edit Product', editing: editMode });
         })
         .catch(err => {
             console.log(err);
@@ -74,9 +71,6 @@ exports.postDeleteProduct = (req, res, next) => {
 };
 
 exports.getAdminProducts = (req, res, next) => {
-    if (!req.session.isLoggedIn) {
-        return res.redirect('/login');
-    }
     Product.find()
         //  .select('title price -_id)  only passes title, price in each product, _id is automatically included,
         //  so -_id removes that
@@ -84,7 +78,7 @@ exports.getAdminProducts = (req, res, next) => {
         //  that userId, second parameter works like select, so user object with just name, and _id is automatically
         //  added
         .then(products => {
-            res.render('admin/products', { pageTitle: 'Admin Products', prods: products, isAuthenticated: req.session.isLoggedIn });
+            res.render('admin/products', { pageTitle: 'Admin Products', prods: products });
         })
         .catch(err => {
             console.log(err);

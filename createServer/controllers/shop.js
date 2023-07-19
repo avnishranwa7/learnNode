@@ -4,7 +4,7 @@ const Order = require('../models/order');
 exports.getProducts = (req, res, next) => {
     Product.find()
         .then(products => {
-            res.render('shop/product-list', { prods: products, pageTitle: 'Products', isAuthenticated: req.session.isLoggedIn });
+            res.render('shop/product-list', { prods: products, pageTitle: 'Products' });
         })
         .catch(err => console.log(err));
 };
@@ -13,20 +13,17 @@ exports.getProduct = (req, res, next) => {
     const productID = req.params.productID;
     Product.findById(productID)
         .then(product => {
-            res.render('shop/product-detail', { product, pageTitle: product.title, isAuthenticated: req.session.isLoggedIn });
+            res.render('shop/product-detail', { product, pageTitle: product.title });
         })
         .catch(err => console.log(err));
 };
 
 exports.getCart = (req, res, next) => {
-    if (!req.session.isLoggedIn) {
-        return res.redirect('/login');
-    }
     req.user
         .populate('cart.items.productId')
         .then(user => {
             const products = user.cart.items;
-            res.render('shop/cart', { pageTitle: 'Cart', products, isAuthenticated: req.session.isLoggedIn });
+            res.render('shop/cart', { pageTitle: 'Cart', products });
         })
         .catch(err => console.log(err));
 };
@@ -54,7 +51,7 @@ exports.deleteCartItem = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-    res.render('shop/index', { pageTitle: 'Shop', isAuthenticated: req.session.isLoggedIn });
+    res.render('shop/index', { pageTitle: 'Shop' });
 };
 
 // exports.getCheckout = (req, res, next)=>{
@@ -64,7 +61,7 @@ exports.getIndex = (req, res, next) => {
 exports.getOrders = (req, res, next) => {
     Order.find({ 'user.userId': req.user._id })
         .then(orders => {
-            res.render('shop/orders', { pageTitle: 'Orders', orders, isAuthenticated: req.session.isLoggedIn });
+            res.render('shop/orders', { pageTitle: 'Orders', orders });
         })
         .catch(err => console.log(err));
 };
@@ -78,7 +75,7 @@ exports.postOrders = (req, res, next) => {
             });
             const order = new Order({
                 user: {
-                    name: req.user.name,
+                    email: req.user.email,
                     userId: req.user
                 },
                 products
