@@ -1,6 +1,21 @@
+require('dotenv').config();
+
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
 
 const User = require('../models/user');
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        type: 'OAuth2',
+        user: process.env.MAIL_USERNAME,
+        pass: process.env.MAIL_PASSWORD,
+        clientId: process.env.OAUTH_CLIENT_ID,
+        clientSecret: process.env.OAUTH_CLIENT_SECRET,
+        refreshToken: process.env.OAUTH_REFRESH_TOKEN
+    }
+});
 
 exports.getLogin = (req, res, next) => {
     let message = req.flash('error');
@@ -55,7 +70,6 @@ exports.postLogin = (req, res, next) => {
                     console.log(err);
                     res.redirect('/login');
                 })
-
         })
         .catch(err => {
             console.log(err);
@@ -87,10 +101,20 @@ exports.postSignup = (req, res, next) => {
                 .then(hashedPassword => {
                     const user = new User({ email, password: hashedPassword, cart: { items: [] } });
                     return user.save();
-                });
+                })
         })
         .then(() => {
-            res.redirect('/login');
+            const mailDetails = {
+                from: 'avnishranwa7@gmail.com',
+                to: email,
+                subject: 'Signup successfull',
+                text: "You've successfully signed up at Nodejs application"
+            };
+            return transporter.sendMail(mailDetails)
+            .then(result=>{
+                console.log(result);
+                res.redirect('/login');
+            })
         })
         .catch(err => console.log(err));
 };
