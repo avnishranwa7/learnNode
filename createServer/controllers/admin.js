@@ -48,22 +48,25 @@ exports.postEditProduct = (req, res, next) => {
 
     Product.findById(productID)
         .then(product => {
+            if(product.userId.toString() !== req.user._id.toString()){
+                return res.redirect('/');
+            }
             product.title = updatedTitle;
             product.price = updatedPrice;
             product.imageUrl = updatedImageUrl;
             product.description = updatedDescription;
 
-            return product.save();
-        })
-        .then(() => {
-            res.redirect('/products');
+            return product.save()
+            .then(() => {
+                res.redirect('/products');
+            });
         })
         .catch(err => console.log(err));
 };
 
 exports.postDeleteProduct = (req, res, next) => {
     const productID = req.body.productId;
-    Product.findByIdAndRemove(productID)
+    Product.deleteOne({_id: productID, userId: req.user._id})
         .then(() => {
             res.redirect('/admin/products');
         })
@@ -71,7 +74,7 @@ exports.postDeleteProduct = (req, res, next) => {
 };
 
 exports.getAdminProducts = (req, res, next) => {
-    Product.find()
+    Product.find({userId: req.user._id})
         //  .select('title price -_id)  only passes title, price in each product, _id is automatically included,
         //  so -_id removes that
         //  .populate('userId', 'name')   populates userId field with not just userId but the entire user object with
