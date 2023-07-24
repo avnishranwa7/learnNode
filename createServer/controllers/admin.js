@@ -38,7 +38,9 @@ exports.postAddProduct = (req, res, next) => {
             res.redirect('/products');
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            next(error);
         });
 };
 
@@ -57,7 +59,9 @@ exports.getEditProduct = (req, res, next) => {
             { product, pageTitle: 'Edit Product', editing: editMode, hasError: false, errorMessage: null, validationErrors: [] });
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            next(error);
         });
 };
 
@@ -101,7 +105,11 @@ exports.postEditProduct = (req, res, next) => {
                 res.redirect('/products');
             });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            next(error);
+        });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -110,7 +118,11 @@ exports.postDeleteProduct = (req, res, next) => {
         .then(() => {
             res.redirect('/admin/products');
         })
-        .catch(err => console.log(err));
+        .catch(err=>{
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            next(error);
+        });
 };
 
 exports.getAdminProducts = (req, res, next) => {
@@ -124,6 +136,8 @@ exports.getAdminProducts = (req, res, next) => {
             res.render('admin/products', { pageTitle: 'Admin Products', prods: products });
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            next(error);
         });
 };
