@@ -16,6 +16,7 @@ const errorController = require('./controllers/error');
 const User = require('./models/user');
 const csrf = require('csurf');
 const flash = require('connect-flash');
+const multer = require('multer');
 
 const store = new MongoDBStore({
     uri: process.env.MONGODB_URI,
@@ -24,13 +25,33 @@ const store = new MongoDBStore({
 
 const csrfProtection = csrf();
 
+const fileStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'images');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
+        cb(null, true);
+    }
+    else {
+        cb(null, false);
+    }
+}
+
 const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ storage: fileStorage, fileFilter }).single('image'));
 app.use(express.static(path.join(rootDir, 'public')));
+app.use('/images', express.static(path.join(rootDir, 'images')));
 
 app.get('/favicon.ico', (req, res, next) => {
     res.status(204).end();
@@ -55,7 +76,7 @@ app.use((req, res, next) => {
     }
     User.findById(req.session.user._id)
         .then(user => {
-            if(!user){
+            if (!user) {
                 next();
             }
 
@@ -77,8 +98,10 @@ app.get('/500', errorController.get500);
 
 app.use(errorController.get404);
 
-app.use((error, req, res, next)=>{
-    res.status(500).render('/500', {
+app.use((error, req, res, next) => {
+    console.log('here come error');
+    console.log(error);
+    res.status(500).render('500', {
         pageTitle: 'Error!',
     });
 })
