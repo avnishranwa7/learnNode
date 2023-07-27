@@ -32,6 +32,7 @@
     "pdfkit": "^0.13.0",
     "pug": "^3.0.2",
     "sequelize": "^6.32.1",
-    "sib-api-v3-sdk": "^8.5.0"
+    "sib-api-v3-sdk": "^8.5.0",
+    "stripe": "^12.14.0"
   }
 }
